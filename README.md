@@ -12,7 +12,7 @@ $ cp etc/config-default.json config.json
 3.使用案例
 ```python
 # 通过以下方式使用期货版API
->>>from wolfquant.future import ApiStruct, MdApi, TraderApi
+>>>from wolfquant.api.future import ApiStruct, MdApi, TraderApi
 ```
 4.运行测试案例
 ```shell
