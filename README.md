@@ -1,4 +1,4 @@
-# futuretrader
+# wolfquant
 期货接口基于pyctp，使用语言python3.6，环境linux64/ubuntu
 # 使用
 
