@@ -9,7 +9,7 @@ url： 'https://github.com/rickyall/wolfquant.git'
 import os
 
 # 将包安装到anaconda中
-package_path = '~/anaconda3/lib/python3.6/site-packages/wolfquant'
+package_path = '{}/site-packages/wolfquant'.format(os.__file__[:-6])
 os.system('rm -rf {}'.format(package_path))
 os.system('cp -rf wolfquant {}'.format(package_path))
 print('安装完成！')
