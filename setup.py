@@ -1,13 +1,15 @@
-from setuptools import setup, find_packages
+"""
+name: 'wolfquant'
+version: '0.0.0'
+description: '构建期货交易的框架'
+author: 'rickyall'
+author_email： 'rickyallqi@gmail.com'
+url： 'https://github.com/rickyall/wolfquant.git'
+"""
+import os
 
-
-setup(
-    name='wolfquant',
-    version='0.0.0',
-    description='构建期货交易的框架',
-    packages=find_packages(exclude=[]),
-    author='rickyall',
-    author_email='rickyallqi@gmail.com',
-    package_data={'': ['*.*']},
-    url='https://github.com/rickyall/wolfquant.git',
-)
+# 将包安装到anaconda中
+package_path = '~/anaconda3/lib/python3.6/site-packages/wolfquant'
+os.system('rm -rf {}'.format(package_path))
+os.system('cp -rf wolfquant {}'.format(package_path))
+print('安装完成！')

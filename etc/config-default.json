@@ -1,0 +1,8 @@
+{
+    "user_info":{
+        "brokerID": "0000",
+        "userID": "0000",
+        "password": "0000",
+        "register_front":"tcp://180.168.146.187:10010"
+    }
+}
