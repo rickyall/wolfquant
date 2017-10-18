@@ -1,8 +1,8 @@
 # futuretrader
 期货接口基于pyctp，使用语言python3.6，环境linux64/ubuntu
 # 使用
-```
-3)使用案例
+
+1)使用案例
 ```python
 
 # 通过以下方式使用期货版API
