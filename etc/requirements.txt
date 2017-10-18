@@ -1,4 +1,2 @@
-six
 numpy
-dateutils
-rqalpha>=2.3.0
+pandas

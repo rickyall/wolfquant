@@ -1,6 +1,6 @@
 """
 name: 'wolfquant'
-version: '0.0.0'
+version: '0.0.1'
 description: '构建期货交易的框架'
 author: 'rickyall'
 author_email： 'rickyallqi@gmail.com'
