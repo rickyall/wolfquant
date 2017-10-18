@@ -9,5 +9,5 @@ setup(
     author='rickyall',
     author_email='rickyallqi@gmail.com',
     package_data={'': ['*.*']},
-    url='https://git.coding.net/rickyall/wolfquant.git',
+    url='https://github.com/rickyall/wolfquant.git',
 )
