@@ -7,9 +7,7 @@ __version__ = '0.2.1'
 
 __all__ = ['ApiStruct', 'MdApi', 'TraderApi']
 
-if 0:
-    from . import ApiStruct
-
+if 0: from . import ApiStruct
 
 class MdApi(object):
     def Create(self, pszFlowPath='', bIsUsingUdp=False, bIsMulticast=False):

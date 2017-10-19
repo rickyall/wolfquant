@@ -60,3 +60,4 @@ dist/
 *.egg-info
 config.json
 */**/__pycache__
+*/**/*.con

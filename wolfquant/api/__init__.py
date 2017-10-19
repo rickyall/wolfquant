@@ -36,7 +36,7 @@ class CtpMdApi(MdApi):
         if not self.logged_in:
             req = ApiStruct.ReqUserLogin(BrokerID=self.brokerID,
                                          UserID=self.userID,
-                                         Password=self.register_front)
+                                         Password=self.password)
             req_id = self.req_id
             self.ReqUserLogin(req, req_id)
             return req_id
@@ -105,6 +105,7 @@ class CtpMdApi(MdApi):
     def OnRtnDepthMarketData(self, pDepthMarketData):
         """行情推送
         """
+        print(pDepthMarketData)
         tick_dict = TickDict(pDepthMarketData)
         if tick_dict.is_valid:
             self.gateway.on_tick(tick_dict)
