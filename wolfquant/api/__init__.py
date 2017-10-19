@@ -105,7 +105,6 @@ class CtpMdApi(MdApi):
     def OnRtnDepthMarketData(self, pDepthMarketData):
         """行情推送
         """
-        print(pDepthMarketData)
         tick_dict = TickDict(pDepthMarketData)
         if tick_dict.is_valid:
             self.gateway.on_tick(tick_dict)

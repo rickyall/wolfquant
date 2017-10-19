@@ -10,7 +10,7 @@ def get_data():
                        user_info['userID'],
                        user_info['password'],
                        user_info['register_front'],
-                       ['RB1801'])
+                       ['rb1801'])
     try:
         while 1:
             time.sleep(1)
