@@ -123,7 +123,7 @@ def ROC(data, ndays):
         - data: 标准的行情时间序列数据
         - ndays: 移动平均的天数
     return:
-        - data: 加入EVM指标的数据
+        - data: 加入ROC指标的数据
     """
     N = data['close'].diff(ndays)
     D = data['close'].shift(ndays)
