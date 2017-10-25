@@ -1,7 +1,7 @@
 from wolfquant.api import MdGateway
 
 
-def get_data():
+def test_get_data():
     import time
     from wolfquant import config
     user_info = config('../config.json')['user_info']
@@ -19,4 +19,4 @@ def get_data():
 
 
 if __name__ == '__main__':
-    get_data()
+    test_get_data()

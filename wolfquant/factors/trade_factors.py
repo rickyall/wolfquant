@@ -4,7 +4,7 @@ import pandas as pd
 #################################################################
 # 滞后类指标
 #################################################################
-def LAGRETURN(data, ndays=5):
+def LAGRETURN(data, ndays):
     """滞后类收入指标
     args:
         - data: 标准的行情时间序列数据
@@ -14,8 +14,6 @@ def LAGRETURN(data, ndays=5):
     """
     name = 'LAGRETURN_{}'.format(ndays)
     LAGRETURN = pd.Series(data['close'].shift(ndays).pct_change() * 100.0, name=name)
-    # 调整指标不为0
-    LAGRETURN[LAGRETURN < 0.0001] = 0.0001
     data = data.join(LAGRETURN)
     return data
 
