@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
 import pandas.io.sql as psql
-import MySQLdb as mdb
+import pymysql as mdb
 
 db_host = 'localhost'
 db_user = 'sec_user'
 db_pass = 'Yutian630403'
 db_name = 'securities_master'
-con = mdb.connect(db_host,  db_user,  db_pass,  db_name)
 
 
 def get_daily_data_from_db_new(ticker, start_date,  end_date):
+    con = mdb.connect(db_host,  db_user,  db_pass,  db_name)
     sql = """SELECT dp.price_date, open_price, high_price, low_price, close_price, volume, adj_close_price
              FROM symbol AS sym
              INNER JOIN daily_price AS dp
@@ -24,6 +24,7 @@ def get_daily_data_from_db_new(ticker, start_date,  end_date):
 
 
 def get_daily_data_from_db(ticker, data_type, start_date, end_date):
+    con = mdb.connect(db_host,  db_user,  db_pass,  db_name)
     data_type = 'dp.' + data_type
     sql = """SELECT dp.price_date, %s
              FROM symbol AS sym
@@ -65,6 +66,7 @@ def optimize(start_date, end_date, tickers):
 
 
 def get_snp_500_tickers():
+    con = mdb.connect(db_host,  db_user,  db_pass,  db_name)
     sql = """SELECT ticker FROM symbol;"""
     data = psql.read_sql(sql, con=con, columns='ticker')
     return data['ticker'].tolist()

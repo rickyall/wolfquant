@@ -1,6 +1,6 @@
 import numpy as np
 from abc import ABCMeta, abstractmethod
-from event import SignalEvent
+from wolfquant.event import SignalEvent
 
 
 class Strategy(object):
@@ -29,7 +29,7 @@ class BuyAndHoldStrategy(Strategy):
             for s in self.symbol_list:
                 bar = self.bars.get_latest_bars(s, N=1)
                 if bar is not None and bar != []:
-                    if self.bought[s] == False:
+                    if self.bought[s] is False:
                         signal = SignalEvent(bar[0][0], bar[0][1], 'LONG')
                         self.event.put(signal)
                         self.bought[s] = True

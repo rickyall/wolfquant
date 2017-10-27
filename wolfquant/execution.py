@@ -1,4 +1,4 @@
-import datetime.datetime as dt
+from datetime import datetime as dt
 from abc import ABCMeta, abstractmethod
 from wolfquant.event import FillEvent
 
