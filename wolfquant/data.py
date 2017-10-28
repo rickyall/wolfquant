@@ -33,7 +33,7 @@ class HistoricCSVDataHandler(DataHandler):
     def __open_convert_csv_files(self):
         comb_index = None
         for s in self.symbol_list:
-            self.symbol_data[s] = pd.io.parsers.read_csv(os.path.join(self.csv_dir, '%s.csv' % s), header=0, index_col=0, name=['datetime', 'open', 'high', 'low', 'close', 'volume', 'adj_close'], parse_dates=True)
+            self.symbol_data[s] = pd.io.parsers.read_csv(os.path.join(self.csv_dir, '%s.csv' % s), header=0, index_col=0, name=['date', 'open', 'close', 'high', 'low', 'volume', 'adj_close'], parse_dates=True)
             if comb_index is None:
                 comb_index = self.symbol_data[s].index
             else:
