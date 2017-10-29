@@ -87,7 +87,7 @@ if __name__ == "__main__":
     csv_dir = 'data/'
     symbol_list = ['hs300']
     initial_capital = 100000.0
-    start_date = datetime.datetime(2005, 4, 8, 0, 0, 0)
+    start_date = datetime.datetime(2015, 4, 8, 0, 0, 0)
     end_date = datetime.datetime(2017, 10, 27, 0, 0, 0)
     heartbeat = 0.0
 
