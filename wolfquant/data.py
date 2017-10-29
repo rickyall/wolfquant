@@ -33,13 +33,14 @@ class HistoricCSVDataHandler(DataHandler):
     def __open_convert_csv_files(self):
         comb_index = None
         for s in self.symbol_list:
-            self.symbol_data[s] = pd.io.parsers.read_csv(os.path.join(self.csv_dir, '%s.csv' % s), header=0, index_col=0, name=['date', 'open', 'close', 'high', 'low', 'volume', 'adj_close'], parse_dates=True)
+            self.symbol_data[s] = pd.io.parsers.read_csv(os.path.join(self.csv_dir, '%s.csv' % s), header=0, index_col=0, names=['datetime', 'open', 'close', 'high', 'low', 'volume', 'adj_close'], parse_dates=True)
             if comb_index is None:
                 comb_index = self.symbol_data[s].index
             else:
                 comb_index = comb_index.union(self.symbol_data[s].index)
             self.latest_symbol_data[s] = []
 
+        # 选取指定时间段的数据，并重置索引
         comb_index = comb_index[(comb_index >= self.start_date) * (comb_index <= self.end_date)]
         for s in self.symbol_list:
             self.symbol_data[s] = self.symbol_data[s].reindex(index=comb_index).fillna(0.0).iterrows()
@@ -56,10 +57,30 @@ class HistoricCSVDataHandler(DataHandler):
         else:
             return bar_list[-N:]
 
+    def get_latest_bars_values(self, symbol, column, N=1):
+        """获取指定symbol的指定字段的最新数据
+        """
+        columns = ['symbol', 'datetime', 'open', 'close', 'high', 'low', 'adj_close']
+        bar_list = self.get_latest_bars(symbol, N=N)
+        return [bar[columns.index(column)] for bar in bar_list]
+
+    def get_latest_bar_value(self, symbol, column):
+        """获取最新的bar数据
+        """
+        bar_list = self.get_latest_bars(symbol)
+        columns = ['symbol', 'datetime', 'open', 'close', 'high', 'low', 'adj_close']
+        return bar_list[0][columns.index(column)]
+
+    def get_latest_bar_datetime(self, symbol):
+        """获取最新的bar的执行日期
+        """
+        bar_list = self.get_latest_bars(symbol)
+        return bar_list[0][1]
+
     def update_bars(self):
         for s in self.symbol_list:
             try:
-                bar = self.__get_new_bar(s).next()
+                bar = self.__get_new_bar(s).__next__()
             except StopIteration:
                 self.continue_backtest = False
             else:

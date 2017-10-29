@@ -1,9 +1,22 @@
 import pandas as pd
 from wolfquant.event import OrderEvent
+from abc import ABCMeta, abstractmethod
 from wolfquant.utils.backtest_utils import create_sharpe_ratio, create_drawdowns
 
 
 class Portfolio(object):
+    __mateclass__ = ABCMeta
+
+    @abstractmethod
+    def update_signal(self, event):
+        raise NotImplementedError("Should implement update_signal()")
+
+    @abstractmethod
+    def update_fill(self, event):
+        raise NotImplementedError("Should implement update_fill()")
+
+
+class NaivePortfolio(Portfolio):
     """
     Portfolio类包含所有资产的的仓位和市值。
     positions DataFrame存储着仓位数量的时间序列。
@@ -44,8 +57,8 @@ class Portfolio(object):
         """
         d = dict((k, v) for k, v in [(s, 0.0) for s in self.symbol_list])
         d['datetime'] = self.start_date
-        d['cash'] = self.initial_capital
-        d['commission'] = 0.0
+        d['cash'] = self.initial_capital  # 现金
+        d['commission'] = 0.0  # 佣金
         d['total'] = self.initial_capital
         return [d]
 
@@ -97,6 +110,16 @@ class Portfolio(object):
     # ======================
     # FILL/POSITION HANDLING
     # ======================
+    def update_positions_from_fill(self, fill):
+        """根据成交单更新仓位
+        """
+        fill_dir = 0
+        if fill.direction == 'BUY':
+            fill_dir = 1
+        if fill.direction == 'SELL':
+            fill_dir = -1
+
+        self.current_positions[fill.symbol] += fill_dir * fill.quantity
 
     def update_holdings_from_fill(self, fill):
         """Takes a Fill object and updates the holdings matrix to
@@ -175,23 +198,22 @@ class Portfolio(object):
         curve.set_index('datetime', inplace=True)
         curve['returns'] = curve['total'].pct_change()
         curve['equity_curve'] = (1.0 + curve['returns']).cumprod()
-        self.equiaty_curve = curve
+        self.equity_curve = curve
 
     def output_summary_stats(self):
         """创建投资组合的一个统计总结
         """
-        total_return = self.equiaty_curve['equity_curve'][-1]
-        returns = self.equiaty_curve['returns']
-        pnl = self.equiaty_curve['equity_curve']
-
-        sharpe_ratio = create_sharpe_ratio(returns, periods=252 * 60 * 6.5)
-        drawdown, max_dd, dd_duration = create_drawdowns(pnl)
-        self.equity_curve['drawdown'] = drawdown
-
-        stats = [('Total Return', '%0.2f%%' % ((total_return - 1.0) * 100.0)),
-                 ('Sharpe Ratio', '%0.2f' % sharpe_ratio),
-                 ('Max Drawdown', '%0.2f%%' % (max_dd * 100.0)),
-                 ('Drawdown Duration', '%d' % dd_duration)]
-
-        self.equiaty_curve.to_csv('equity.csv')
+        import matplotlib.pyplot as plt
+        total_return = self.equity_curve['equity_curve'][-1]
+        returns = self.equity_curve['returns']
+        pnl = self.equity_curve['equity_curve']
+        sharpe_ratio = create_sharpe_ratio(returns)
+        max_dd, dd_duration = create_drawdowns(pnl)
+        stats = [("Total Return", "%0.2f%%" % ((total_return-1.0)*1000.0)),
+                 ("Sharpe Ratio", "%0.2f" % sharpe_ratio),
+                 ("Max Drawdown", "%0.2f%%" % (max_dd*100.0)),
+                 ("Drawdown Duration", "%d" % dd_duration)]
+        plt.clf()
+        plt.plot(self.equity_curve.index, pnl)
+        plt.savefig('cumulative_return')
         return stats

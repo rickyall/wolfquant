@@ -5,7 +5,7 @@ from wolfquant.backtest import Backtest
 from wolfquant.data import HistoricCSVDataHandler
 from wolfquant.event import SignalEvent
 from wolfquant.execution import SimulatedExecutionHandler
-from wolfquant.portfolio import Portfolio
+from wolfquant.portfolio import NaivePortfolio
 from wolfquant.strategy import Strategy
 
 
@@ -85,9 +85,10 @@ class MovingAverageCrossStrategy(Strategy):
 
 if __name__ == "__main__":
     csv_dir = 'data/'
-    symbol_list = ['AAPL']
+    symbol_list = ['hs300']
     initial_capital = 100000.0
-    start_date = datetime.datetime(1990, 1, 1, 0, 0, 0)
+    start_date = datetime.datetime(2005, 4, 8, 0, 0, 0)
+    end_date = datetime.datetime(2017, 10, 27, 0, 0, 0)
     heartbeat = 0.0
 
     backtest = Backtest(csv_dir,
@@ -95,9 +96,10 @@ if __name__ == "__main__":
                         initial_capital,
                         heartbeat,
                         start_date,
+                        end_date,
                         HistoricCSVDataHandler,
                         SimulatedExecutionHandler,
-                        Portfolio,
+                        NaivePortfolio,
                         MovingAverageCrossStrategy)
 
     backtest.simulate_trading()
