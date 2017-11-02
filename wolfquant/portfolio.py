@@ -150,7 +150,7 @@ class NaivePortfolio(Portfolio):
             self.update_positions_from_fill(event)
             self.update_holdings_from_fill(event)
 
-    def generate_naive_order(self, signal):
+    def generate_naive_order(self, signal, quantity):
         """
         Simply files an Order object as a constant quantity
         sizing of the signal object, without risk management or
@@ -158,20 +158,27 @@ class NaivePortfolio(Portfolio):
 
         Parameters:
         signal - The tuple containing Signal information.
+        quantity - 生成订单
         """
         order = None
 
         symbol = signal.symbol
         direction = signal.signal_type
+        # 确定下单数
+        signal_cost = self.bars.get_latest_bars(signal.symbol)[0][7]
+        if self.current_holdings['cash'] > signal_cost * quantity:
+            mkt_quantity = quantity
+        else:
+            mkt_quantity = int(self.current_holdings['cash'] / signal_cost)
+            print('由于资金不足，只能买入{}/{}股'.format(mkt_quantity, quantity))
 
-        mkt_quantity = 100
         cur_quantity = self.current_positions[symbol]
         order_type = 'MKT'
 
-        if direction == 'LONG' and cur_quantity == 0:
+        if direction == 'LONG':
             order = OrderEvent(symbol, order_type, mkt_quantity, 'BUY')
 
-        if direction == 'SHORT' and cur_quantity == 0:
+        if direction == 'SHORT':
             order = OrderEvent(symbol, order_type, mkt_quantity, 'SELL')
 
         if direction == 'EXIT' and cur_quantity > 0:

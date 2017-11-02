@@ -1,4 +1,4 @@
-from wolfquant.api import MdGateway
+from wolfquant.interface import MdGateway
 
 
 def test_get_data():
