@@ -83,10 +83,36 @@ class MovingAverageCrossStrategy(Strategy):
                         self.bought[symbol] = 'OUT'
 
 
+class BuyAndHoldStrategy(Strategy):
+    def __init__(self, bars, events):
+        self.bars = bars
+        self.symbol_list = self.bars.symbol_list
+        self.event = events
+        self.bought = self._calculate_initial_bought()
+
+    def _calculate_initial_bought(self):
+        bought = {}
+        for s in self.symbol_list:
+            bought[s] = False
+        return bought
+
+    def calculate_signals(self, event):
+        strategy_id = 1
+        strength = 1.0
+        if event.type == 'MARKET':
+            for s in self.symbol_list:
+                bar = self.bars.get_latest_bars(s)
+                if bar is not None and bar != []:
+                    if self.bought[s] is False:
+                        signal = SignalEvent(strategy_id, bar[0][0], bar[0][1], 'LONG', strength)
+                        self.event.put(signal)
+                        self.bought[s] = True
+
+
 if __name__ == "__main__":
     csv_dir = 'data/'
     symbol_list = ['hs300']
-    initial_capital = 100000.0
+    initial_capital = 100000000.0
     start_date = datetime.datetime(2015, 4, 8, 0, 0, 0)
     end_date = datetime.datetime(2017, 10, 27, 0, 0, 0)
     heartbeat = 0.0
@@ -100,6 +126,6 @@ if __name__ == "__main__":
                         HistoricCSVDataHandler,
                         SimulatedExecutionHandler,
                         NaivePortfolio,
-                        MovingAverageCrossStrategy)
+                        BuyAndHoldStrategy)
 
     backtest.simulate_trading()

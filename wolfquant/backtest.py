@@ -36,7 +36,6 @@ class Backtest(object):
         self.signals = 0  # 信号数
         self.orders = 0  # 订单数
         self.fills = 0  # 成交数
-        self.num_strats = 1
 
         self.__generate_trading_instances()
 

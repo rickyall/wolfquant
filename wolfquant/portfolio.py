@@ -136,7 +136,7 @@ class NaivePortfolio(Portfolio):
             fill_dir = -1
 
         # 更新持仓列表
-        fill_cost = self.bars.get_latest_bar_value(fill.symbol, 'adj_close')
+        fill_cost = self.bars.get_latest_bars(fill.symbol)[0][7]
         cost = fill_dir * fill_cost * fill.quantity
         self.current_holdings[fill.symbol] += cost
         self.current_holdings['commission'] += fill.commission
