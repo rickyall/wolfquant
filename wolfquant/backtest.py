@@ -42,7 +42,7 @@ class Backtest(object):
     def __generate_trading_instances(self):
         """生成交易实例对象
         """
-        print("Creating DataHandler, Strategy, Portfolio and ExecutionHandler")
+        print("开始进行回测...")
         self.data_handler = self.data_handler_cls(self.events, self.csv_dir, self.symbol_list, self.start_date, self.end_date)
         self.strategy = self.strategy_cls(self.data_handler, self.events)
         self.portfolio = self.portfolio_cls(self.data_handler, self.events, self.start_date, self.initial_capital)
