@@ -15,24 +15,9 @@ class MovingAverageCrossStrategy(Strategy):
     short/long simple weighted moving average. Default short/long
     windows are 100/400 periods respectively.
     """
-
-    def __init__(self, bars, events, short_window=100, long_window=400):
-        """
-        Initialises the buy and hold strategy.
-
-        Parameters:
-        bars - The DataHandler object that provides bar information
-        events - The Event Queue object.
-        short_window - The short moving average lookback.
-        long_window - The long moving average lookback.
-        """
-        self.bars = bars
-        self.symbol_list = self.bars.symbol_list
-        self.events = events
-        self.short_window = short_window
-        self.long_window = long_window
-
-        # Set to True if a symbol is in the market
+    def init(self):
+        self.short_window = 100
+        self.long_window = 400
         self.bought = self._calculate_initial_bought()
 
     def _calculate_initial_bought(self):
@@ -45,67 +30,60 @@ class MovingAverageCrossStrategy(Strategy):
             bought[s] = 'OUT'
         return bought
 
-    def calculate_signals(self, event):
+    def handle_bar(self, bar_dict):
         """
         Generates a new set of signals based on the MAC
         SMA with the short window crossing the long window
         meaning a long entry and vice versa for a short entry.
 
-        Parameters
-        event - A MarketEvent object.
+        Parameters:
+            bar_dict: 不同symbol的行情信息
+        results:
+            Total Return: 17.96%
+            Sharpe Ratio: 0.60
+            Max Drawdown: 20.46%
+            Drawdown Duration: 391
+            交易信号数: 3
+            下单数: 3
+            成交数: 3
         """
-        if event.type == 'MARKET':
-            for symbol in self.symbol_list:
-                bars = self.bars.get_latest_bars_values(
-                    symbol, "close", N=self.long_window)
+        for symbol in self.symbol_list:
+            bars = self.bars.get_latest_bars_values(
+                symbol, "close", N=self.long_window)
 
-                if bars is not None and bars != []:
-                    short_sma = np.mean(bars[-self.short_window:])
-                    long_sma = np.mean(bars[-self.long_window:])
+            if bars is not None and bars != []:
+                short_sma = np.mean(bars[-self.short_window:])
+                long_sma = np.mean(bars[-self.long_window:])
+                quantity = 10
 
-                    dt = self.bars.get_latest_bar_datetime(symbol)
-                    sig_dir = ""
-                    strength = 1.0
-                    quantity = 10
-                    strategy_id = 1
+                if short_sma > long_sma and self.bought[symbol] == "OUT":
+                    self.order_shares(symbol, quantity)
+                    self.bought[symbol] = 'LONG'
 
-                    if short_sma > long_sma and self.bought[symbol] == "OUT":
-                        sig_dir = 'LONG'
-                        signal = SignalEvent(
-                            strategy_id, symbol, dt, sig_dir, quantity, strength)
-                        self.events.put(signal)
-                        self.bought[symbol] = 'LONG'
-
-                    elif short_sma < long_sma and self.bought[symbol] == "LONG":
-                        sig_dir = 'EXIT'
-                        signal = SignalEvent(
-                            strategy_id, symbol, dt, sig_dir, quantity, strength)
-                        self.events.put(signal)
-                        self.bought[symbol] = 'OUT'
+                elif short_sma < long_sma and self.bought[symbol] == "LONG":
+                    self.order_shares(symbol, -quantity)
+                    self.bought[symbol] = 'OUT'
 
 
 class BuyAndHoldStrategy(Strategy):
-    def __init__(self, bars, events):
-        self.bars = bars
-        self.symbol_list = self.bars.symbol_list
-        self.event = events
-        self.bought = self._calculate_initial_bought()
+    """一直持有策略
+    results:
+    Total Return: -2.74%
+    Sharpe Ratio: -0.05
+    Max Drawdown: 25.00%
+    Drawdown Duration: 584
+    交易信号数: 1
+    下单数: 1
+    成交数: 1
+    """
+    def init(self):
+        self.bought = dict([(symbol, False) for symbol in self.symbol_list])
 
-    def _calculate_initial_bought(self):
-        bought = {}
+    def handle_bar(self, bar_dict):
         for s in self.symbol_list:
-            bought[s] = False
-        return bought
-
-    def calculate_signals(self, event):
-        if event.type == 'MARKET':
-            for s in self.symbol_list:
-                bar = self.bars.get_latest_bars(s)
-                if bar is not None and bar != []:
-                    if self.bought[s] is False:
-                        signal = OrderEvent(s, 'MKT', 10, 'BUY')
-                        self.event.put(signal)
-                        self.bought[s] = True
+            if self.bought[s] is False:
+                self.order_shares(s, 10)
+                self.bought[s] = True
 
 
 if __name__ == "__main__":

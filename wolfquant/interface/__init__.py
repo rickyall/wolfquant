@@ -123,7 +123,7 @@ class MdGateway(object):
         self._md_api = CtpMdApi(self, user_id, password, broker_id, md_address)
         for i in range(self._retry_times):
             self._md_api.connect()
-            sleep(self._retry_interval * (i+1))
+            sleep(self._retry_interval * (i + 1))
             if self._md_api.logged_in:
                 self.on_log('CTP 行情服务器登录成功')
                 break

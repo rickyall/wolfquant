@@ -45,8 +45,8 @@ class Backtest(object):
         """
         print("=====================\n开始进行回测...\n=====================")
         self.data_handler = self.data_handler_cls(self.events, self.csv_dir, self.symbol_list, self.start_date, self.end_date)
-        self.strategy = self.strategy_cls(self.data_handler, self.events)
         self.portfolio = self.portfolio_cls(self.data_handler, self.events, self.start_date, self.initial_capital)
+        self.strategy = self.strategy_cls(self.data_handler, self.events, self.portfolio)
         self.execution_handler = self.execution_handler_cls(self.events)  # 生成交易实例
 
     def __run_backtest(self):
@@ -71,7 +71,8 @@ class Backtest(object):
                 else:
                     if event is not None:
                         if event.type == 'MARKET':  # 如果事件类型是行情，就计算交易信号
-                            self.strategy.calculate_signals(event)  # 运行策略
+                            bar_dict = self.data_handler.get_latest_bars_dict(self.symbol_list)
+                            self.strategy.handle_bar(bar_dict)  # 运行策略
                             self.portfolio.update_timeindex(event)  # 更新时间戳
                         elif event.type == 'SIGNAL':  # 如果事件类型是交易信号，就根据交易信号生成订单
                             self.signals += 1

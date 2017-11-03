@@ -49,6 +49,14 @@ class HistoricCSVDataHandler(DataHandler):
         for b in self.symbol_data[symbol]:
             yield tuple([symbol, b[0], b[1][0], b[1][1], b[1][2], b[1][3], b[1][4], b[1][5]])
 
+    def get_latest_bars_dict(self, symbol_list, N=1):
+        """获取多个证券的bar
+        """
+        bar_dict = {}
+        for symbol in symbol_list:
+            bar_dict[symbol] = self.get_latest_bars(symbol, N=N)
+        return bar_dict
+
     def get_latest_bars(self, symbol, N=1):
         try:
             bar_list = self.latest_symbol_data[symbol]

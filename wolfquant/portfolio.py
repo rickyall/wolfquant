@@ -173,8 +173,7 @@ class NaivePortfolio(Portfolio):
             print('由于资金不足，只能买入{}/{}股'.format(mkt_quantity, signal.quantity))
 
         cur_quantity = self.current_positions[symbol]
-        order_type = 'MKT'
-
+        order_type = signal.order_type
         if direction == 'LONG':
             order = OrderEvent(symbol, order_type, mkt_quantity, 'BUY')
 

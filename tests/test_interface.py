@@ -14,6 +14,7 @@ def test_get_data():
     try:
         while 1:
             time.sleep(1)
+            print(new_getway._snapshot_cache)
     except KeyboardInterrupt:
         pass
 
