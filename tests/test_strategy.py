@@ -66,19 +66,20 @@ class MovingAverageCrossStrategy(Strategy):
                     dt = self.bars.get_latest_bar_datetime(symbol)
                     sig_dir = ""
                     strength = 1.0
+                    quantity = 10
                     strategy_id = 1
 
                     if short_sma > long_sma and self.bought[symbol] == "OUT":
                         sig_dir = 'LONG'
                         signal = SignalEvent(
-                            strategy_id, symbol, dt, sig_dir, strength)
+                            strategy_id, symbol, dt, sig_dir, quantity, strength)
                         self.events.put(signal)
                         self.bought[symbol] = 'LONG'
 
                     elif short_sma < long_sma and self.bought[symbol] == "LONG":
                         sig_dir = 'EXIT'
                         signal = SignalEvent(
-                            strategy_id, symbol, dt, sig_dir, strength)
+                            strategy_id, symbol, dt, sig_dir, quantity, strength)
                         self.events.put(signal)
                         self.bought[symbol] = 'OUT'
 
@@ -124,6 +125,6 @@ if __name__ == "__main__":
                         HistoricCSVDataHandler,
                         SimulatedExecutionHandler,
                         NaivePortfolio,
-                        BuyAndHoldStrategy)
+                        MovingAverageCrossStrategy)
 
     backtest.simulate_trading()

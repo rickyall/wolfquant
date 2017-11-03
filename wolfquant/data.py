@@ -57,6 +57,11 @@ class HistoricCSVDataHandler(DataHandler):
         else:
             return bar_list[-N:]
 
+    def get_latest_bars_values(self, symbol, column, N=1):
+        bar_columns = ['datetime', 'open', 'close', 'high', 'low', 'volume', 'adj_close']
+        bar_list = self.get_latest_bars(symbol, N=N)
+        return [bar[bar_columns.index(column)] for bar in bar_list]
+
     def get_latest_bar_datetime(self, symbol):
         """获取最新的bar的执行日期
         """
