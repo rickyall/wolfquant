@@ -1,6 +1,7 @@
 import queue
 import pprint
 import time
+import sys
 
 
 class Backtest(object):
@@ -42,7 +43,7 @@ class Backtest(object):
     def __generate_trading_instances(self):
         """生成交易实例对象
         """
-        print("开始进行回测...")
+        print("=====================\n开始进行回测...\n=====================")
         self.data_handler = self.data_handler_cls(self.events, self.csv_dir, self.symbol_list, self.start_date, self.end_date)
         self.strategy = self.strategy_cls(self.data_handler, self.events)
         self.portfolio = self.portfolio_cls(self.data_handler, self.events, self.start_date, self.initial_capital)
@@ -53,6 +54,7 @@ class Backtest(object):
         """
         i = 0
         while True:
+            sys.stdout.write('\r运行第{}个交易日'.format(i))
             i += 1
             # 更新市场Bar
             if self.data_handler.continue_backtest is True:  # 如果可以继续进行回测，就更细bar
@@ -87,8 +89,7 @@ class Backtest(object):
         """输出策略的表现
         """
         self.portfolio.create_equity_curve_dataframe()  # 交易结束后，创建portfolio的历史序列数据
-
-        print("创建统计描述\n..........................")
+        print("\n=====================\n创建统计描述...\n=====================")
         stats = self.portfolio.output_summary_stats()
         for name, value in stats:
             print('{}: {}'.format(name, value))
