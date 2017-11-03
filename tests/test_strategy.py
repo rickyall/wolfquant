@@ -14,6 +14,14 @@ class MovingAverageCrossStrategy(Strategy):
     Carries out a basic Moving Average Crossover strategy with a
     short/long simple weighted moving average. Default short/long
     windows are 100/400 periods respectively.
+    results:
+        Total Return: 6.05%
+        Sharpe Ratio: 1.22
+        Max Drawdown: 1.80%
+        Drawdown Duration: 353
+        交易信号数: 3
+        下单数: 3
+        成交数: 3
     """
     def init(self):
         self.short_window = 100
@@ -38,14 +46,6 @@ class MovingAverageCrossStrategy(Strategy):
 
         Parameters:
             bar_dict: 不同symbol的行情信息
-        results:
-            Total Return: 17.96%
-            Sharpe Ratio: 0.60
-            Max Drawdown: 20.46%
-            Drawdown Duration: 391
-            交易信号数: 3
-            下单数: 3
-            成交数: 3
         """
         for symbol in self.symbol_list:
             bars = self.bars.get_latest_bars_values(
@@ -89,7 +89,7 @@ class BuyAndHoldStrategy(Strategy):
 if __name__ == "__main__":
     csv_dir = 'data/'
     symbol_list = ['hs300']
-    initial_capital = 100000.0
+    initial_capital = 1000000.0
     start_date = datetime.datetime(2015, 4, 8, 0, 0, 0)
     end_date = datetime.datetime(2017, 10, 27, 0, 0, 0)
     heartbeat = 0.0
@@ -103,6 +103,6 @@ if __name__ == "__main__":
                         HistoricCSVDataHandler,
                         SimulatedExecutionHandler,
                         NaivePortfolio,
-                        MovingAverageCrossStrategy)
+                        BuyAndHoldStrategy)
 
     backtest.simulate_trading()
