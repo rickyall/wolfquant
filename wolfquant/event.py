@@ -26,7 +26,7 @@ class SignalEvent(Event):
     This is received by a Portfolio object and acted upon.
     """
 
-    def __init__(self, strategy_id, symbol, datetime, signal_type, strength):
+    def __init__(self, strategy_id, symbol, datetime, signal_type, quantity, strength):
         """
         Initialises the SignalEvent.
 
@@ -43,6 +43,7 @@ class SignalEvent(Event):
         self.symbol = symbol
         self.datetime = datetime
         self.signal_type = signal_type
+        self.quantity = quantity
         self.strength = strength
 
 

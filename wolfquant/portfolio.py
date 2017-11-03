@@ -100,7 +100,7 @@ class NaivePortfolio(Portfolio):
 
         for s in self.symbol_list:
             # Approximation to the real value?
-            market_value = self.current_positions[s] * self.bars.get_latest_bar_value(s, 'adj_close')
+            market_value = self.current_positions[s] * self.bars.get_latest_bars(s)[0][7]
             dh[s] = market_value
             dh['total'] += market_value
 
@@ -150,7 +150,7 @@ class NaivePortfolio(Portfolio):
             self.update_positions_from_fill(event)
             self.update_holdings_from_fill(event)
 
-    def generate_naive_order(self, signal, quantity):
+    def generate_naive_order(self, signal):
         """
         Simply files an Order object as a constant quantity
         sizing of the signal object, without risk management or
@@ -166,11 +166,11 @@ class NaivePortfolio(Portfolio):
         direction = signal.signal_type
         # 确定下单数
         signal_cost = self.bars.get_latest_bars(signal.symbol)[0][7]
-        if self.current_holdings['cash'] > signal_cost * quantity:
-            mkt_quantity = quantity
+        if self.current_holdings['cash'] > signal_cost * signal.quantity:
+            mkt_quantity = signal.quantity
         else:
             mkt_quantity = int(self.current_holdings['cash'] / signal_cost)
-            print('由于资金不足，只能买入{}/{}股'.format(mkt_quantity, quantity))
+            print('由于资金不足，只能买入{}/{}股'.format(mkt_quantity, signal.quantity))
 
         cur_quantity = self.current_positions[symbol]
         order_type = 'MKT'

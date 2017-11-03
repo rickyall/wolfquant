@@ -54,7 +54,6 @@ class Backtest(object):
         i = 0
         while True:
             i += 1
-            print(i)
             # 更新市场Bar
             if self.data_handler.continue_backtest is True:  # 如果可以继续进行回测，就更细bar
                 self.data_handler.update_bars()
@@ -89,12 +88,10 @@ class Backtest(object):
         """
         self.portfolio.create_equity_curve_dataframe()  # 交易结束后，创建portfolio的历史序列数据
 
-        print("创建统计描述...")
+        print("创建统计描述\n..........................")
         stats = self.portfolio.output_summary_stats()
-
-        print('创建走势...')
-        print(self.portfolio.equity_curve.tail(10))
-        pprint.pprint(stats)
+        for name, value in stats:
+            print('{}: {}'.format(name, value))
 
         print('交易信号数: {}'.format(self.signals))
         print("下单数: {}".format(self.orders))
