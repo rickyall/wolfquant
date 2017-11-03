@@ -83,6 +83,63 @@ for m in models:
     print("%s\n" % confusion_matrix(pred, y_test))
 ```
 
+## 运行策略回测
+```python
+import datetime
+import numpy as np
+
+from wolfquant.backtest import Backtest
+from wolfquant.data import HistoricCSVDataHandler
+from wolfquant.event import SignalEvent, OrderEvent
+from wolfquant.execution import SimulatedExecutionHandler
+from wolfquant.portfolio import NaivePortfolio
+from wolfquant.strategy import Strategy
+
+# 创建策略
+class BuyAndHoldStrategy(Strategy):
+    def __init__(self, bars, events):
+        self.bars = bars
+        self.symbol_list = self.bars.symbol_list
+        self.event = events
+        self.bought = self._calculate_initial_bought()
+
+    def _calculate_initial_bought(self):
+        bought = {}
+        for s in self.symbol_list:
+            bought[s] = False
+        return bought
+
+    def calculate_signals(self, event):
+        if event.type == 'MARKET':
+            for s in self.symbol_list:
+                bar = self.bars.get_latest_bars(s)
+                if bar is not None and bar != []:
+                    if self.bought[s] is False:
+                        signal = OrderEvent(s, 'MKT', 10, 'BUY')
+                        self.event.put(signal)
+                        self.bought[s] = True
+
+# 运行策略
+csv_dir = 'data/'
+symbol_list = ['hs300']
+initial_capital = 100000.0
+start_date = datetime.datetime(2015, 4, 8, 0, 0, 0)
+end_date = datetime.datetime(2017, 10, 27, 0, 0, 0)
+heartbeat = 0.0
+backtest = Backtest(csv_dir,
+                    symbol_list,
+                    initial_capital,
+                    heartbeat,
+                    start_date,
+                    end_date,
+                    HistoricCSVDataHandler,
+                    SimulatedExecutionHandler,
+                    NaivePortfolio,
+                    MovingAverageCrossStrategy)
+backtest.simulate_trading()
+```
+
+
 # 路线图
 ### 0.0.0
 * 实现了期货python版的交易接接口
