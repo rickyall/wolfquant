@@ -3,7 +3,7 @@ import logging
 from time import sleep
 from queue import Queue, Empty
 from wolfquant.utils.api_utils import str2bytes
-from wolfquant.api.future import ApiStruct, MdApi
+from wolfquant.interface.future import ApiStruct, MdApi
 from wolfquant.utils.data_utils import TickDict
 
 
