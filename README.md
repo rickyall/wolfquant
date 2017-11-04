@@ -97,27 +97,24 @@ from wolfquant.strategy import Strategy
 
 # 创建策略
 class BuyAndHoldStrategy(Strategy):
-    def __init__(self, bars, events):
-        self.bars = bars
-        self.symbol_list = self.bars.symbol_list
-        self.event = events
-        self.bought = self._calculate_initial_bought()
+    """一直持有策略
+    results:
+    Total Return: -2.74%
+    Sharpe Ratio: -0.05
+    Max Drawdown: 25.00%
+    Drawdown Duration: 584
+    交易信号数: 1
+    下单数: 1
+    成交数: 1
+    """
+    def init(self):
+        self.bought = dict([(symbol, False) for symbol in self.symbol_list])
 
-    def _calculate_initial_bought(self):
-        bought = {}
+    def handle_bar(self, bar_dict):
         for s in self.symbol_list:
-            bought[s] = False
-        return bought
-
-    def calculate_signals(self, event):
-        if event.type == 'MARKET':
-            for s in self.symbol_list:
-                bar = self.bars.get_latest_bars(s)
-                if bar is not None and bar != []:
-                    if self.bought[s] is False:
-                        signal = OrderEvent(s, 'MKT', 10, 'BUY')
-                        self.event.put(signal)
-                        self.bought[s] = True
+            if self.bought[s] is False:
+                self.order_shares(s, 10)
+                self.bought[s] = True
 
 # 运行策略
 csv_dir = 'data/'
@@ -152,8 +149,12 @@ backtest.simulate_trading()
 ### 0.0.3
 * 添加回测模块。
 * 更新策略测试案例。
-###
-* 调整回测功能函数。
+### 0.0.4
+* 调整回测功能函数，添加交易接口。
+    * order_shares: 按照数据来买
+    * order_value: 按照市值来买
+    * order_percent: 按照仓位百分比来买
+    * order_target_percent: 买到目标仓位
 * 接受并保存期货高频行情数据。
 
 # 附言
