@@ -83,8 +83,8 @@ class BuyAndHoldStrategy(Strategy):
 
 if __name__ == "__main__":
     run_backtest(MovingAverageCrossStrategy, {
-        'symbol_list': ['hs300'],
-        'init_cash': 100000.0,
+        'symbol_list': ['hs300', 'sh000001'],
+        'init_cash': 100000000.0,
         'start': '2015-04-08',
         'end': '2017-10-27'
     })

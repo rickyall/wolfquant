@@ -1,5 +1,5 @@
 from wolfquant.backtest import Backtest
-from wolfquant.data import HistoricCSVDataHandler, TushareDataHandler
+from wolfquant.data import TushareDataHandler
 from wolfquant.event import SignalEvent, OrderEvent
 from wolfquant.execution import SimulatedExecutionHandler
 from wolfquant.portfolio import NaivePortfolio

@@ -40,16 +40,16 @@ class Strategy(object):
             dt = self.bars.get_latest_bar_datetime(symbol)
             target_value = cost * amount
             if target_value > cash:
-                print("因资金不足未创建订单")
+                print("【订单信息】{}-因资金不足未创建订单".format(dt))
             elif target_value <= cash and target_value + current_holding > 0:
                 signal = SignalEvent(self.strategy_id, symbol, dt, direction, amount, style)
                 self.event.put(signal)
-                print("创建订单{}-{}-{}-{}-{}".format(dt, direction, symbol, abs(amount), cost))
+                print("【订单信息】{}-{}-{}-{}-{}".format(dt, direction, symbol, abs(amount), cost))
             elif target_value + current_holding < 0:
                 self.clear_position(symbol, style=style)
-                print("订单金额超过所持有股票市值，对该股票进行清仓")
+                print("【订单信息】{}-订单金额超过所持有股票市值，对该股票进行清仓".format(dt))
         else:
-            print("{}-{}-{}未成交".format(direction, symbol, amount))
+            print("【订单信息】{}-{}-{}-{}未成交".format(dt, direction, symbol, amount))
 
     def clear_position(self, symbol, style='MKT'):
         """清空仓位

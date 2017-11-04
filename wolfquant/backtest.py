@@ -54,7 +54,6 @@ class Backtest(object):
         """
         i = 0
         while True:
-            sys.stdout.write('\r运行第{}个交易日..'.format(i))
             i += 1
             # 更新市场Bar
             if self.data_handler.continue_backtest is True:  # 如果可以继续进行回测，就更细bar
