@@ -5,7 +5,10 @@ import pandas as pd
 def create_sharpe_ratio(returns, periods=252):
     """夏普比率
     """
-    return np.sqrt(periods) * np.mean(returns) / np.std(returns)
+    if np.std(returns) == 0:
+        return 0.
+    else:
+        return np.sqrt(periods) * np.mean(returns) / np.std(returns)
 
 
 def create_drawdowns(equity_curve):

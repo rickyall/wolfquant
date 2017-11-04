@@ -57,7 +57,7 @@ class MovingAverageCrossStrategy(Strategy):
                 quantity = 10
 
                 if short_sma > long_sma and self.bought[symbol] == "OUT":
-                    self.order_shares(symbol, quantity)
+                    self.order_percent(symbol, 0.5)
                     self.bought[symbol] = 'LONG'
 
                 elif short_sma < long_sma and self.bought[symbol] == "LONG":
@@ -82,14 +82,14 @@ class BuyAndHoldStrategy(Strategy):
     def handle_bar(self, bar_dict):
         for s in self.symbol_list:
             if self.bought[s] is False:
-                self.order_shares(s, 10)
+                self.order_percent(s, 1)
                 self.bought[s] = True
 
 
 if __name__ == "__main__":
     csv_dir = 'data/'
     symbol_list = ['hs300']
-    initial_capital = 1000000.0
+    initial_capital = 100000.0
     start_date = datetime.datetime(2015, 4, 8, 0, 0, 0)
     end_date = datetime.datetime(2017, 10, 27, 0, 0, 0)
     heartbeat = 0.0
@@ -103,6 +103,6 @@ if __name__ == "__main__":
                         HistoricCSVDataHandler,
                         SimulatedExecutionHandler,
                         NaivePortfolio,
-                        BuyAndHoldStrategy)
+                        MovingAverageCrossStrategy)
 
     backtest.simulate_trading()

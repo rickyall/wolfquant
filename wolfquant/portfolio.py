@@ -165,13 +165,7 @@ class NaivePortfolio(Portfolio):
         symbol = signal.symbol
         direction = signal.signal_type
         # 确定下单数
-        signal_cost = self.bars.get_latest_bars(signal.symbol)[0][7]
-        if self.current_holdings['cash'] > signal_cost * signal.quantity:
-            mkt_quantity = signal.quantity
-        else:
-            mkt_quantity = int(self.current_holdings['cash'] / signal_cost)
-            print('由于资金不足，只能买入{}/{}股'.format(mkt_quantity, signal.quantity))
-
+        mkt_quantity = signal.quantity
         cur_quantity = self.current_positions[symbol]
         order_type = signal.order_type
         if direction == 'LONG':
