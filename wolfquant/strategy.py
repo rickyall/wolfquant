@@ -34,7 +34,7 @@ class Strategy(object):
         """
         if self.checkout_tradeable(symbol):
             direction = 'LONG' if amount > 0 else 'SHORT'
-            cost = self.bars.get_latest_bars(symbol)[0][2]
+            cost = self.bars.get_latest_bars(symbol)[0][3]
             cash = self.portfolio.current_holdings['cash']
             current_holding = self.portfolio.current_holdings[symbol]
             dt = self.bars.get_latest_bar_datetime(symbol)
@@ -62,7 +62,7 @@ class Strategy(object):
         """按照资金下单
         """
         if self.checkout_tradeable(symbol):
-            cost = self.bars.get_latest_bars(symbol)[0][2]
+            cost = self.bars.get_latest_bars(symbol)[0][3]
             target_amount = np.int(value // cost)  # 获取目标数量
             self.order_shares(symbol, target_amount)  # 下订单
 

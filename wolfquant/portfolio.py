@@ -100,7 +100,7 @@ class NaivePortfolio(Portfolio):
 
         for s in self.symbol_list:
             # Approximation to the real value?
-            market_value = self.current_positions[s] * self.bars.get_latest_bars(s)[0][7]
+            market_value = self.current_positions[s] * self.bars.get_latest_bars(s)[0][3]
             dh[s] = market_value
             dh['total'] += market_value
 
@@ -136,7 +136,7 @@ class NaivePortfolio(Portfolio):
             fill_dir = -1
 
         # 更新持仓列表
-        fill_cost = self.bars.get_latest_bars(fill.symbol)[0][7]
+        fill_cost = self.bars.get_latest_bars(fill.symbol)[0][3]
         cost = fill_dir * fill_cost * fill.quantity
         self.current_holdings[fill.symbol] += cost
         self.current_holdings['commission'] += fill.commission

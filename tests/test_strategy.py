@@ -1,11 +1,6 @@
 import datetime
 import numpy as np
-
-from wolfquant.backtest import Backtest
-from wolfquant.data import HistoricCSVDataHandler
-from wolfquant.event import SignalEvent, OrderEvent
-from wolfquant.execution import SimulatedExecutionHandler
-from wolfquant.portfolio import NaivePortfolio
+from wolfquant.api import run_backtest
 from wolfquant.strategy import Strategy
 
 
@@ -24,8 +19,8 @@ class MovingAverageCrossStrategy(Strategy):
         成交数: 3
     """
     def init(self):
-        self.short_window = 100
-        self.long_window = 400
+        self.short_window = 10
+        self.long_window = 100
         self.bought = self._calculate_initial_bought()
 
     def _calculate_initial_bought(self):
@@ -82,27 +77,14 @@ class BuyAndHoldStrategy(Strategy):
     def handle_bar(self, bar_dict):
         for s in self.symbol_list:
             if self.bought[s] is False:
-                self.order_percent(s, 1)
+                self.order_shares(s, 10)
                 self.bought[s] = True
 
 
 if __name__ == "__main__":
-    csv_dir = 'data/'
-    symbol_list = ['hs300']
-    initial_capital = 100000.0
-    start_date = datetime.datetime(2015, 4, 8, 0, 0, 0)
-    end_date = datetime.datetime(2017, 10, 27, 0, 0, 0)
-    heartbeat = 0.0
-
-    backtest = Backtest(csv_dir,
-                        symbol_list,
-                        initial_capital,
-                        heartbeat,
-                        start_date,
-                        end_date,
-                        HistoricCSVDataHandler,
-                        SimulatedExecutionHandler,
-                        NaivePortfolio,
-                        MovingAverageCrossStrategy)
-
-    backtest.simulate_trading()
+    run_backtest(MovingAverageCrossStrategy, {
+        'symbol_list': ['hs300'],
+        'init_cash': 100000.0,
+        'start': '2015-04-08',
+        'end': '2017-10-27'
+    })

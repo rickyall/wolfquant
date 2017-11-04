@@ -157,5 +157,9 @@ backtest.simulate_trading()
     * order_target_percent: 买到目标仓位
 * 接受并保存期货高频行情数据。
 
+### 0.0.5
+* 添加tushare数据接口
+* 重新定义回测API
+
 # 附言
 该项目会长期做，有志同道合的小伙伴，欢迎一起入坑，我的微信号wolfquant。

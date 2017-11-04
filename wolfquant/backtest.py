@@ -9,23 +9,23 @@ class Backtest(object):
     """
     def __init__(
         self,
-        csv_dir,
         symbol_list,
         initial_capital,
-        heartbeat,
         start_date,
         end_date,
         data_handler,
         execution_handler,
         portfolio,
-        strategy
+        strategy,
+        heartbeat=0.0,
+        csv_dir=None
     ):
-        self.csv_dir = csv_dir  # 读取的数据的路径
         self.symbol_list = symbol_list  # 交易列表
         self.initial_capital = initial_capital  # 初始本金
         self.heartbeat = heartbeat  # 心跳
         self.start_date = start_date  # 开始日期
         self.end_date = end_date  # 结束日期
+        self.csv_dir = csv_dir  # 读取的数据的路径
 
         self.data_handler_cls = data_handler  # 行情数据
         self.execution_handler_cls = execution_handler  # 交易
@@ -44,7 +44,7 @@ class Backtest(object):
         """生成交易实例对象
         """
         print("=====================\n开始进行回测...\n=====================")
-        self.data_handler = self.data_handler_cls(self.events, self.csv_dir, self.symbol_list, self.start_date, self.end_date)
+        self.data_handler = self.data_handler_cls(self.events, self.symbol_list, self.start_date, self.end_date, self.csv_dir)
         self.portfolio = self.portfolio_cls(self.data_handler, self.events, self.start_date, self.initial_capital)
         self.strategy = self.strategy_cls(self.data_handler, self.events, self.portfolio)
         self.execution_handler = self.execution_handler_cls(self.events)  # 生成交易实例
