@@ -1,4 +1,5 @@
 import pandas as pd
+import talib as ta
 
 
 #################################################################
@@ -44,8 +45,18 @@ def EWMA(data, ndays):
         - data: 加入移动平均指标的数据
     """
     name = 'EWMA_{}'.format(ndays)
-    EMA = pd.Series(data['close'].ewm(span=ndays, min_periods=ndays-1).mean(), name=name)
+    EMA = pd.Series(data['close'].ewm(span=ndays, min_periods=ndays - 1).mean(), name=name)
     data = data.join(EMA)
+    return data
+
+
+def MACD(data, fastperiod=12, slowperiod=26, signalperiod=9):
+    """MACD指标：指数平滑移动平均线
+    """
+    macd, macdsignal, macdhist = ta.MACD(data['close'].values, fastperiod=fastperiod, slowperiod=slowperiod, signalperiod=signalperiod)
+    data['macd'] = macd
+    data['macdsignal'] = macdsignal
+    data['macdhist'] = macdhist
     return data
 
 
@@ -129,4 +140,20 @@ def ROC(data, ndays):
     D = data['close'].shift(ndays)
     ROC = pd.Series(N / D, name='ROC')
     data = data.join(ROC)
+    return data
+
+
+#################################################################
+# 相对强弱指标
+#################################################################
+def RSI(data, ndays):
+    """RSI: 相对强弱指标，相对强弱指数RSI是根据一定时期内上涨点数和涨跌点数之和的比率制作出的一种技术曲线。
+    args:
+        - data: 标准的行情时间序列数据
+        - ndays: 时间窗口
+    return:
+        - data: 加入RSI指标的数据
+    """
+    RSI = pd.Series(ta.RSI(data['close'].values, timeperiod=ndays), name='RSI')
+    data = data.join(RSI)
     return data
